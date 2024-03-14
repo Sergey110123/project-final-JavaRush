@@ -3,6 +3,16 @@ spring:
   init:
     mode: always
   datasource:
-    url: jdbc:postgresql://localhost:5433/jira-test
+    url: jdbc:h2:mem:jira-test;NON_KEYWORDS=VALUE
     username: jira
     password: JiraRush
+    driverClassName: org.h2.Driver
+
+#spring.cache.type: none
+#spring:
+#  init:
+#    mode: always
+#  datasource:
+#    url: jdbc:postgresql://localhost:5433/jira-test
+#    username: jira
+#    password: JiraRush

@@ -5,18 +5,22 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.jakarta.Hibernate5JakartaModule;
 import com.javarush.jira.common.util.JsonUtil;
+import liquibase.integration.spring.SpringLiquibase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.http.ProblemDetail;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import javax.sql.DataSource;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
@@ -65,5 +69,39 @@ public class AppConfig {
     interface MixIn {
         @JsonAnyGetter
         Map<String, Object> getProperties();
+    }
+
+    @Bean
+    @Profile("prod")
+    public DataSource getDataSourceForPostgres() {
+        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
+        dataSourceBuilder.driverClassName("org.postgresql.Driver");
+        dataSourceBuilder.url("jdbc:postgresql://localhost:5432/jira");
+        dataSourceBuilder.username("jira");
+        dataSourceBuilder.password("JiraRush");
+        return dataSourceBuilder.build();
+    }
+    @Bean
+    @Profile("test")
+    public DataSource getDataSourceForH2() {
+        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
+        dataSourceBuilder.driverClassName("org.h2.Driver");
+        dataSourceBuilder.url("jdbc:h2:mem:jira-test;NON_KEYWORDS=VALUE");
+        dataSourceBuilder.username("jira");
+        dataSourceBuilder.password("JiraRush");
+        return dataSourceBuilder.build();
+    }
+    @Bean
+    public SpringLiquibase liquibase() {
+        SpringLiquibase liquibase = new SpringLiquibase();
+        if (isProd()) {
+            liquibase.setDataSource(getDataSourceForPostgres());
+            liquibase.setChangeLog("classpath:db/changelog.sql");
+        }
+        else if(isTest()) {
+            liquibase.setDataSource(getDataSourceForH2());
+            liquibase.setChangeLog("classpath:db/changelogForH2.sql");
+        }
+        return liquibase;
     }
 }
