@@ -13,12 +13,14 @@ services:
       - '5432:5432'
     volumes:
       - ./pgdata:/var/postgresql/data
+    networks:
+      - backend
 
-  server:
+  jira-app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: server
+    container_name: jira-app
     ports:
       - '8080:8080'
     depends_on:
@@ -27,5 +29,22 @@ services:
       - SERVER_PORT=8080
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db/jira
     restart: on-failure
+    networks:
+      - backend
+
+  nginx:
+    container_name: nginx
+    image: nginx
+    ports:
+      - '80:80'
+    volumes:
+      - ./config/nginx.conf:/etc/nginx.conf.d
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
 
 

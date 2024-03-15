@@ -76,7 +76,7 @@ public class AppConfig {
     public DataSource getDataSourceForPostgres() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("org.postgresql.Driver");
-        dataSourceBuilder.url("jdbc:postgresql://localhost:5432/jira");
+        dataSourceBuilder.url("jdbc:postgresql://db:5432/jira");
         dataSourceBuilder.username("jira");
         dataSourceBuilder.password("JiraRush");
         return dataSourceBuilder.build();
