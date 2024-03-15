@@ -1,30 +1,29 @@
-## [REST API](http://localhost:8080/doc)
+## [JiraRush project](http://localhost:8080/doc)
 
-## Концепция:
+JiraRush is a task board like Jira or Trello
 
-- Spring Modulith
-    - [Spring Modulith: достигли ли мы зрелости модульности](https://habr.com/ru/post/701984/)
-    - [Introducing Spring Modulith](https://spring.io/blog/2022/10/21/introducing-spring-modulith)
-    - [Spring Modulith - Reference documentation](https://docs.spring.io/spring-modulith/docs/current-SNAPSHOT/reference/html/)
+### Technologies and Frameworks:
 
-```
-  url: jdbc:postgresql://localhost:5432/jira
-  username: jira
-  password: JiraRush
-```
+- Spring Framework (Boot, Data Jpa, Security, MVC, Test)
+- Hibernate
+- PostgreSQL
+- Liquibase
+- Thymeleaf
+- jQuery
+- Swagger
+- Caffeine
+- JUnit
+- Docker
+- Nginx
+- Lombock
 
-- Есть 2 общие таблицы, на которых не fk
-    - _Reference_ - справочник. Связь делаем по _code_ (по id нельзя, тк id привязано к окружению-конкретной базе)
-    - _UserBelong_ - привязка юзеров с типом (owner, lead, ...) к объекту (таска, проект, спринт, ...). FK вручную будем
-      проверять
+### Installation
+1. Clone the project
+2. Execute command 'docker-compose up' in project folder. The network of 3 containers will be created: Postgres, Nginx and application
+3. Database will be created and populated automatically
+4. A running application is available  at http://localhost:8080
+5. Credentials are available at http://localhost:8080/swagger-ui/index.html
 
-## Аналоги
 
-- https://java-source.net/open-source/issue-trackers
-
-## Тестирование
-
-- https://habr.com/ru/articles/259055/
-
-Список выполненных задач:
+List of completed tasks:
 2, 3, 4, 5, 6, 9 и 10
