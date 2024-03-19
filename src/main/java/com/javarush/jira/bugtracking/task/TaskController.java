@@ -13,6 +13,7 @@ import com.javarush.jira.login.AuthUser;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import static com.javarush.jira.common.BaseHandler.createdResponse;
 
@@ -45,6 +47,19 @@ public class TaskController {
     public TaskToFull get(@PathVariable long id) {
         log.info("get task by id={}", id);
         return taskService.get(id);
+    }
+
+    @GetMapping("/{id}/tags")
+    public Set<String> getTaskTags(@PathVariable long id) {
+        log.info("get task's tags by id={}", id);
+        return taskService.getTags(id);
+    }
+
+    @PatchMapping("/{id}/tags")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addTagsToTask(@PathVariable long id, @RequestBody Set<String> tags) {
+        log.info("add tags to task={}", id);
+        taskService.addTags(id, tags);
     }
 
     @GetMapping("/by-sprint")
