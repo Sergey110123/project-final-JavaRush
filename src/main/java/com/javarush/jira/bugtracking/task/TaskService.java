@@ -16,10 +16,12 @@ import com.javarush.jira.login.AuthUser;
 import com.javarush.jira.ref.RefType;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -161,5 +163,30 @@ public class TaskService {
         for (String tag : tags) {
             tagsFromDB.remove(tag);
         }
+    }
+
+    public String getTimeInProgress(Task taskIn) {
+        Task task = handler.getRepository().getExisted(taskIn.getId());
+        LocalDateTime start = null;
+        LocalDateTime finish = null;
+        List<Activity> activities = task.getActivities();
+        for (Activity activity : activities) {
+            if (activity.getStatusCode().equals("in_progress")) start = activity.getUpdated();
+            if (activity.getStatusCode().equals("ready_for_review")) finish = activity.getUpdated();
+        }
+        Duration duration = Duration.between(start, finish);
+        return DurationFormatUtils.formatDuration(duration.toMillis(), "H:mm:ss", true);
+    }
+    public String getTimeInReview(Task taskIn) {
+        Task task = handler.getRepository().getExisted(taskIn.getId());
+        LocalDateTime start = null;
+        LocalDateTime finish = null;
+        List<Activity> activities = task.getActivities();
+        for (Activity activity : activities) {
+            if (activity.getStatusCode().equals("ready_for_review")) start = activity.getUpdated();
+            if (activity.getStatusCode().equals("done")) finish = activity.getUpdated();
+        }
+        Duration duration = Duration.between(start, finish);
+        return DurationFormatUtils.formatDuration(duration.toMillis(), "H:mm:ss", true);
     }
 }
