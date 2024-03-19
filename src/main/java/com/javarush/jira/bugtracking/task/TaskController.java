@@ -61,6 +61,12 @@ public class TaskController {
         log.info("add tags to task={}", id);
         taskService.addTags(id, tags);
     }
+    @DeleteMapping("/{id}/tags")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTagsFromTask(@PathVariable long id, @RequestBody Set<String> tags) {
+        log.info("delete tags from task={}", id);
+        taskService.deleteTags(id, tags);
+    }
 
     @GetMapping("/by-sprint")
     public List<TaskTo> getAllBySprint(@RequestParam long sprintId) {
@@ -121,6 +127,7 @@ public class TaskController {
         log.info("change task(id={}) sprint to {}", id, sprintId);
         taskService.changeSprint(id, sprintId);
     }
+
 
     @GetMapping("/assignments/by-sprint")
     public List<UserBelong> getTaskAssignmentsBySprint(@RequestParam long sprintId) {

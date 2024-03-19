@@ -14,6 +14,7 @@ import com.javarush.jira.common.error.NotFoundException;
 import com.javarush.jira.common.util.Util;
 import com.javarush.jira.login.AuthUser;
 import com.javarush.jira.ref.RefType;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -151,5 +152,14 @@ public class TaskService {
     public void addTags(long id, Set<String> tags) {
         Task task = handler.getRepository().getExisted(id);
         task.setTags(tags);
+    }
+
+    @Transactional
+    public void deleteTags(long id, Set<String> tags) {
+        Task task = handler.getRepository().getExisted(id);
+        Set<String> tagsFromDB = task.getTags();
+        for (String tag : tags) {
+            tagsFromDB.remove(tag);
+        }
     }
 }
