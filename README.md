@@ -36,3 +36,4 @@ JiraRush is a task board like Jira or Trello
 8. Add a count of how long the task was in operation and testing
 9. Write a Dockerfile for the application
 10. Write a docker-compose file to run the application container along with the database and nginx
+11. Add localization in at least two languages for email templates (mail) and the home page index.html
